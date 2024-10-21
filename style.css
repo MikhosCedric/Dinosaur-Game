@@ -12,7 +12,10 @@ body {
   align-items: center;
   min-height: 100vh;
   font-family: "Press Start 2P", cursive;
-  background-image: linear-gradient(180deg, #9631a8 0%, #470971 100%);
+  background-image: url("images/neonbg2.jpg");
+  background-size: cover; /* Ensures the image covers the whole screen */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat;
 }
 
 .world {
