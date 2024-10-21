@@ -9,19 +9,29 @@ const SPEED_SCALE_INCREASE = 0.00001;
 
 const worldElem = document.querySelector("[data-world]");
 const scoreElem = document.querySelector("[data-score]");
+const highscoreElem = document.querySelector("[data-Highscore]");
 const startScreenElem = document.querySelector("[data-start-screen]");
+
+let lastTime;
+let speedScale;
+let score;
+let highScores = JSON.parse(localStorage.getItem("highScores")) || [
+  { score: 0, time: "0.00" },
+  { score: 0, time: "0.00" },
+  { score: 0, time: "0.00" },
+  { score: 0, time: "0.00" },
+  { score: 0, time: "0.00" },
+];
+let startTime;
 
 setPixelToWorldScale();
 window.addEventListener("resize", setPixelToWorldScale);
 document.addEventListener("keydown", handleStart, { once: true });
 
-let lastTime;
-let speedScale;
-let score;
-let Highscore;
 function update(time) {
   if (lastTime == null) {
     lastTime = time;
+    startTime = time;
     window.requestAnimationFrame(update);
     return;
   }
@@ -33,7 +43,7 @@ function update(time) {
   updateCactus(delta, speedScale);
   updateSpeedScale(delta);
   updateScore(delta);
-  if (checkLose()) return handleLose();
+  if (checkLose()) return handleLose(time);
 
   lastTime = time;
   window.requestAnimationFrame(update);
@@ -66,7 +76,6 @@ function handleStart() {
   lastTime = null;
   speedScale = 1;
   score = 0;
-  Highscore = 1000;
   setupclouds();
   setupGround();
   setupDino();
@@ -75,16 +84,57 @@ function handleStart() {
   window.requestAnimationFrame(update);
 }
 
-function handleLose() {
+function handleLose(time) {
   setDinoLose();
+  updateLeaderboard(time);
+  showSummaryPopup(time);
   setTimeout(() => {
     document.addEventListener("keydown", handleStart, { once: true });
     startScreenElem.classList.remove("hide");
   }, 100);
 }
 
-if (score > Highscore) {
-  Highscore = score;
+function updateLeaderboard(endTime) {
+  const elapsedTime = ((endTime - startTime) / 1000).toFixed(2);
+  highScores.push({ score: Math.floor(score), time: elapsedTime });
+  highScores.sort((a, b) => b.score - a.score);
+  highScores = highScores.slice(0, 5);
+  localStorage.setItem("highScores", JSON.stringify(highScores));
+  highscoreElem.innerHTML = `HI ${highScores[0].score}`;
+  highscoreElem.innerHTML = `HI ${highScores[0].score}`;
+}
+
+function showSummaryPopup(endTime) {
+  const elapsedTime = ((endTime - startTime) / 1000).toFixed(2);
+  const summaryElem = document.createElement("div");
+  summaryElem.classList.add("summary-popup");
+  summaryElem.innerHTML = `
+    <div class="summary-content">
+      <h2>Game Over</h2>
+      <p>Current Score: ${Math.floor(score)}</p>
+      <p>Time Elapsed: ${elapsedTime} seconds</p>
+      <h3>Leaderboard</h3>
+      <p>${highScores
+        .map((entry) => `${entry.score} - ${entry.time}s`)
+        .join("<br>")}</p>
+      <button id="close-summary">Close</button>
+    </div>
+  `;
+  document.body.appendChild(summaryElem);
+  document.getElementById("close-summary").addEventListener("click", () => {
+    document.body.removeChild(summaryElem);
+    document.removeEventListener("keydown", handleClosePopup);
+  });
+  document.addEventListener("keydown", handleClosePopup);
+}
+
+function handleClosePopup(e) {
+  if (e.code === "Space") {
+    const summaryElem = document.querySelector(".summary-popup");
+    if (summaryElem) {
+      document.body.removeChild(summaryElem);
+    }
+  }
 }
 
 function setPixelToWorldScale() {
@@ -98,3 +148,6 @@ function setPixelToWorldScale() {
   worldElem.style.width = `${WORLD_WIDTH * worldToPixelScale}px`;
   worldElem.style.height = `${WORLD_HEIGHT * worldToPixelScale}px`;
 }
+
+// Initial highscore display
+highscoreElem.innerHTML = `HI ${highScores[0].score}`;

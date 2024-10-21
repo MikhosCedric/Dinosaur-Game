@@ -6,8 +6,8 @@ import {
 
 const dinoElem = document.querySelector("[data-dino]");
 const JUMP_SPEED = 0.4;
-const GRAVITY = 0.00195;
-const FALL_SPEED = 0.01; // Increased fall speed when pressing space mid-air
+const GRAVITY = 0.0015;
+const FALL_SPEED = 0.01;
 const DINO_FRAME_COUNT = 2;
 const FRAME_TIME = 100;
 let gameSound = new Audio("audio/press_sound.mp3");
@@ -38,7 +38,6 @@ export function updateDino(delta, speedScale) {
 
 export function getDinoRect() {
   const rect = dinoElem.getBoundingClientRect();
-  // Adjusting the collision box to be smaller
   return {
     top: rect.top + 10,
     left: rect.left + 100,
@@ -67,7 +66,6 @@ function handleRun(delta, speedScale) {
 }
 
 function handleJump(delta) {
-  // change png to raptor-jump.png
   if (isJumping) {
     dinoElem.src = `images/raptor-jump.png`;
   }

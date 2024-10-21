@@ -46,7 +46,7 @@ body {
 .start-screen {
   position: absolute;
   font-size: 2vmin;
-  color: #535353;
+  color: white;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -92,4 +92,31 @@ body {
   left: 50%;
   top: 1%;
   right: 50%;
+}
+
+.summary-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  z-index: 1000;
+}
+.summary-content {
+  text-align: center;
+}
+.summary-content h2 {
+  margin: 0 0 10px;
+}
+.summary-content p {
+  margin: 5px 0;
+}
+#close-summary {
+  margin-top: 10px;
+  padding: 5px 10px;
+  font-size: 1em;
 }

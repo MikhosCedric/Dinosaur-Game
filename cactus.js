@@ -37,7 +37,6 @@ export function updateCactus(delta, speedScale) {
 export function getCactusRects() {
   return [...document.querySelectorAll("[data-cactus]")].map((cactus) => {
     const rect = cactus.getBoundingClientRect();
-    // Adjusting the collision box to be smaller
     return {
       top: rect.top + 5,
       left: rect.left + 5,
